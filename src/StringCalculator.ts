@@ -6,9 +6,11 @@ export function add(numbers: string): number {
     /*
       1. Single number returns the value
       2. Two numbers, comma delimited, returns the sum
-      3. handle any amount of numbers, comma delimited`
+      3. handle any amount of numbers, comma delimited
+      4. handle newlines between numbers
      */
-    return numbers.split(',')
-        .map(num => parseInt(num))
-        .reduce((sum, num) => sum + num, 0);
+    const nums = numbers.split(/[,\n]/) // regex to split by comma or newline
+        .map(num => parseInt(num));
+
+    return nums.reduce((sum, num) => sum + num, 0);
 }
