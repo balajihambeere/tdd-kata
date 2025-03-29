@@ -9,6 +9,7 @@ export function add(numbers: string): number {
       3. handle any amount of numbers, comma delimited
       4. handle newlines between numbers
       5. support different delimiters
+      6. negative numbers throw an exception
      */
     let delimiter = /[,\n]/; // Default delimiters are comma and newline
 
@@ -29,6 +30,12 @@ export function add(numbers: string): number {
 
     const nums = numsString.split(delimiter)
         .map(num => parseInt(num));
+
+    // Filter out negative numbers
+    const negatives = nums.filter(num => num < 0);
+    if (negatives.length > 0) {
+        throw new Error(`negative numbers not allowed ${negatives.join(',')}`);
+    }
 
     return nums.reduce((sum, num) => sum + num, 0);
 }
