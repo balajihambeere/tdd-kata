@@ -1,3 +1,3 @@
-function helloworld() {
-    return "Hello, world!";
+export function add(numbers: string) {
+    // not implemented
 }
