@@ -1,41 +1,71 @@
-// StringCalculator.ts
-export function add(numbers: string): number {
-    // Empty string returns 0
-    if (numbers === '') return 0;
-    // Single number returns the number itself
-    /*
-      1. Single number returns the value
-      2. Two numbers, comma delimited, returns the sum
-      3. handle any amount of numbers, comma delimited
-      4. handle newlines between numbers
-      5. support different delimiters
-      6. negative numbers throw an exception
-     */
-    let delimiter = /[,\n]/; // Default delimiters are comma and newline
+// check if string is empty
+function isEmpty(numbers: string): boolean {
+    // if string is empty return true
+    return numbers === '';
+}
 
-    let numsString = numbers;
-    // Check for custom delimiter
-    // If the string starts with "//", it indicates a custom delimiter
-    if (numbers.startsWith('//')) {
+// parseDelimiter function
+function parseDelimiter(numbers: string): { delimiter: RegExp, numbersString: string } {
+    // default delimiter is comma and new line
+    const defaultDelimiter = /[,\n]/;
 
-        const delimiterEndIndex = numbers.indexOf('\n'); // Find the index of the first newline character
-
-        const customDelimiter = numbers.substring(2, delimiterEndIndex); // Extract the custom delimiter
-        delimiter = new RegExp(`[${customDelimiter}\n]`); // Create a regex for the custom delimiter and newline
-
-        // Extract the numbers string after the custom delimiter declaration
-        // For example, if the input is "//;\n1;2", this will give "1;2"
-        numsString = numbers.substring(delimiterEndIndex + 1); // 
+    // if string does not start with // return default delimiter
+    if (!numbers.startsWith('//')) {
+        return { delimiter: defaultDelimiter, numbersString: numbers };
     }
 
-    const nums = numsString.split(delimiter)
-        .map(num => parseInt(num));
+    // find the end of the delimiter
+    const delimiterEndIndex = numbers.indexOf('\n');
 
-    // Filter out negative numbers
+    // get custom delimiter
+    const customDelimiter = numbers.substring(2, delimiterEndIndex);
+    // if custom delimiter is more than one character, use regex to create a new delimiter
+    // if custom delimiter is one character, use the character itself
+    const delimiter = new RegExp(`[${customDelimiter}\n]`);
+
+    // get the numbers string
+    const numbersString = numbers.substring(delimiterEndIndex + 1);
+
+    // return the delimiter and numbers string
+    return { delimiter, numbersString };
+}
+
+// parse numbers
+function parseNumbers(numbersString: string, delimiter: RegExp): number[] {
+    // split the numbers string using the delimiter
+    // convert the numbers to integers and filter out NaN values
+    // return the numbers
+    return numbersString.split(delimiter)
+        .map(num => parseInt(num))
+        .filter(num => !isNaN(num));
+}
+
+//  check for negatives
+function checkForNegatives(nums: number[]): void {
+    // filter the numbers to get the negative numbers
+
     const negatives = nums.filter(num => num < 0);
+    // if there are negative numbers, throw an error
     if (negatives.length > 0) {
         throw new Error(`negative numbers not allowed ${negatives.join(',')}`);
     }
+}
 
+// sum numbers
+function sumNumbers(nums: number[]): number {
+    // reduce the numbers to get the sum
+    // return the sum
     return nums.reduce((sum, num) => sum + num, 0);
+}
+
+export function add(numbers: string): number {
+    // if empty string return 0
+    if (isEmpty(numbers)) return 0;
+
+    const { delimiter, numbersString } = parseDelimiter(numbers);
+    const nums = parseNumbers(numbersString, delimiter);
+
+    checkForNegatives(nums);
+
+    return sumNumbers(nums);
 }
