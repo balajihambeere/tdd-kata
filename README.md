@@ -17,6 +17,9 @@ String Calculator
 | Handle new lines between numbers |  '1\n2,3'   | 6 |
 | Support different delimiters |  '//;\n1;2'   | 3 |
 | Negative numbers throw an exception |  '1,-2,3'   | negative numbers not allowed |
+| should handle multiple delimiters |  '//[*][%]\n1*2%3'   | 6 |
+| Support different delimiters |  '//[***]\n1***2***3'   | 6 |
+| Support different delimiters |  '//[**][%%]\n1**2%%3'   | 6 |
 
 ## Multiple delimiters Loop Logic
 
