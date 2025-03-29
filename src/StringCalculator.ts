@@ -4,32 +4,69 @@ function isEmpty(numbers: string): boolean {
     return numbers === '';
 }
 
-// parseDelimiter function
-function parseDelimiter(numbers: string): { delimiter: RegExp, numbersString: string } {
-    // default delimiter is comma and new line
-    const defaultDelimiter = /[,\n]/;
-
-    // if string does not start with // return default delimiter
+//  parse the delimiters
+function parseDelimiters(numbers: string): { delimiters: RegExp, numbersString: string } {
+    // check if the string starts with //
+    // if it does not, return the default delimiters
     if (!numbers.startsWith('//')) {
-        return { delimiter: defaultDelimiter, numbersString: numbers };
+        return { delimiters: /[,\n]/, numbersString: numbers };
     }
-
-    // find the end of the delimiter
+    // find the end of the delimiter section
     const delimiterEndIndex = numbers.indexOf('\n');
 
-    // get custom delimiter
-    const customDelimiter = numbers.substring(2, delimiterEndIndex);
-    // if custom delimiter is more than one character, use regex to create a new delimiter
-    // if custom delimiter is one character, use the character itself
-    const delimiter = new RegExp(`[${customDelimiter}\n]`);
+    // extract the delimiter section
+    const delimiterSection = numbers.substring(2, delimiterEndIndex);
 
-    // get the numbers string
-    const numbersString = numbers.substring(delimiterEndIndex + 1);
+    // Handle single custom delimiter (simple case)
+    if (!delimiterSection.startsWith('[')) {
+        // escape special characters
+        const customDelimiter = escapeRegExp(delimiterSection);
+        // return the delimiter and the numbers
+        return {
 
-    // return the delimiter and numbers string
-    return { delimiter, numbersString };
+            delimiters: new RegExp(`[${customDelimiter}\n]`),
+            numbersString: numbers.substring(delimiterEndIndex + 1)
+        };
+    }
+
+    // Handle multiple delimiters in brackets
+    // to store the delimiters
+    const delimiterPatterns: string[] = [];
+
+    // to track the current position in the delimiter section
+    let currentPos = 0;
+
+    // loop through the delimiter section
+    // check if current position is less than the length of the delimiter section
+    while (currentPos < delimiterSection.length) {
+        // check if the current character is [
+
+        if (delimiterSection[currentPos] === '[') {
+            // if it is, find the closing bracket ]
+            const endPos = delimiterSection.indexOf(']', currentPos); // 
+            if (endPos === -1) break; // if no closing bracket is found, break the loop
+            // escape the delimiter and add it to the array
+            const delimiter = escapeRegExp(delimiterSection.substring(currentPos + 1, endPos));
+            // add the delimiter to the array
+            delimiterPatterns.push(delimiter);
+            // move the current position to the end of the closing bracket
+            currentPos = endPos + 1;
+        } else {
+            // move to the next character
+            currentPos++;
+        }
+    }
+    // return the delimiters and the numbers
+    return {
+        delimiters: new RegExp(`[${delimiterPatterns.join('')}\n]`),
+        numbersString: numbers.substring(delimiterEndIndex + 1)
+    };
 }
 
+// escape special characters
+function escapeRegExp(string: string): string {
+    return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}
 // parse numbers
 function parseNumbers(numbersString: string, delimiter: RegExp): number[] {
     // split the numbers string using the delimiter
@@ -62,10 +99,11 @@ export function add(numbers: string): number {
     // if empty string return 0
     if (isEmpty(numbers)) return 0;
 
-    const { delimiter, numbersString } = parseDelimiter(numbers);
-    const nums = parseNumbers(numbersString, delimiter);
+    const { delimiters, numbersString } = parseDelimiters(numbers);
+    const nums = parseNumbers(numbersString, delimiters);
 
     checkForNegatives(nums);
 
     return sumNumbers(nums);
 }
+
