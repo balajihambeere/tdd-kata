@@ -1,0 +1,26 @@
+{
+  "name": "tdd-kata",
+  "version": "1.0.0",
+  "description": "string calculator",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/balajihambeere/tdd-kata.git"
+  },
+  "keywords": [
+    "typescript",
+    "jest"
+  ],
+  "author": "balaji hambeere",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/balajihambeere/tdd-kata/issues"
+  },
+  "homepage": "https://github.com/balajihambeere/tdd-kata#readme",
+  "dependencies": {
+    "jest": "^29.7.0"
+  }
+}
