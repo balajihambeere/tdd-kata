@@ -11,7 +11,7 @@ npm run test
 
 !["flow diagram"](./flow-diagram.png)
 
-## Status of Tests
+## Test Case Table 
 
 | Add              | Input | output |
 | :---------------- | :------: | ----: |
