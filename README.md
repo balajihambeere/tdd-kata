@@ -2,6 +2,11 @@
 
 String Calculator
 
+## Install dependencies and run the test
+```bash
+npm install
+npm run test
+```
 ## Flow Diagram using FigJam board
 
 !["flow diagram"](./flow-diagram.png)
